@@ -1,3 +1,4 @@
+import logging
 from flask import Flask
 from .config import config
 import logging
@@ -6,6 +7,9 @@ from logging.handlers import RotatingFileHandler
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
     
     if not app.debug:
         file_handler = RotatingFileHandler(
