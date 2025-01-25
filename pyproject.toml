@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "face-spoof-bz"
+version = "1.0"
+description = "Flask-based APIs for face spoof detection using anti-spoofing models"
+readme = "README.md"
+requires-python = ">=3.8,<3.9"
+authors = [
+  { name = "Aditya", email = "banzo.aditya@gmail.com" }
+]
+keywords = ["face-detection", "anti-spoofing", "flask-api", "computer-vision"]
+
+dependencies = [
+    "easydict == 1.10",
+    "numpy == 1.23.5",
+    "tqdm == 4.64.1",
+    "torch == 1.13.1",
+    "torchvision == 0.14.1",
+    "opencv-python == 4.6.0.66", 
+    "Pillow == 9.3.0",
+    "tensorboardX == 2.5.1",
+    "python-dotenv == 1.0.0",
+    "Flask == 3.0.3" 
+]
