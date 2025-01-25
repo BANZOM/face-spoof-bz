@@ -1,6 +1,7 @@
 import base64
 import os
 import time
+import logging
 import cv2
 import numpy as np
 from src.anti_spoof_predict import AntiSpoofPredict
@@ -14,6 +15,11 @@ class AntiSpoofService:
         self.model_test = AntiSpoofPredict(device_id)
         self.image_cropper = CropImage()
         self._load_models()
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
 
     def _load_models(self):
         self.models = []
@@ -25,13 +31,12 @@ class AntiSpoofService:
                 "w_input": w_input,
                 "scale": scale
             })
+        logging.info(f"Loaded models: {[model['name'] for model in self.models]}")
 
     def predict(self, image, threshold):
         start_time = time.time()
         image = cv2.resize(image, (int(image.shape[0] * 3/4), image.shape[0]))
-
-        # Debugging
-        # cv2.imwrite("resized.jpg", image)
+        logging.info("Image resized for prediction")
 
         image_bbox = self.model_test.get_bbox(image)
         prediction = np.zeros((1, 3))
@@ -47,12 +52,14 @@ class AntiSpoofService:
             }
             img = self.image_cropper.crop(**param)
             prediction += self.model_test.predict(img, os.path.join(self.model_dir, model["name"]))
+            logging.info(f"Prediction made using model: {model['name']}")
 
         processing_time = time.time() - start_time
         label = np.argmax(prediction)
         confidence = prediction[0][label] / 2
         
         result_img = self._generate_result_image(image, image_bbox, label, confidence)
+        logging.info(f"Prediction result: label={label}, confidence={confidence}, processing_time={processing_time}")
 
         is_real = bool(label == 1 and confidence > threshold)
         return is_real, confidence, result_img, "{:.2f}".format(processing_time)
