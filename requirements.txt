@@ -7,3 +7,4 @@ opencv_python==4.6.0.66
 Pillow==9.3.0
 tensorboardX==2.5.1
 python-dotenv
+flask
