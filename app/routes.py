@@ -32,7 +32,7 @@ def predict():
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         
         service = current_app.anti_spoof_service
-        is_real, score, result_img = service.predict(image, threshold)
+        is_real, score, result_img, time_taken = service.predict(image, threshold)
 
         if not is_real:
             filename = os.path.join(os.getenv("SPOOF_DIR"), f"{int(time.time())}.jpeg")
@@ -42,6 +42,7 @@ def predict():
             "is_real": is_real,
             "score": float(score),
             "threshold": float(threshold),
+            "time_taken": time_taken,
         }), 200
 
     except Exception as e:

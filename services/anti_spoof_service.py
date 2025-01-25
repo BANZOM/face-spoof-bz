@@ -31,7 +31,7 @@ class AntiSpoofService:
         image = cv2.resize(image, (int(image.shape[0] * 3/4), image.shape[0]))
 
         # Debugging
-        cv2.imwrite("resized.jpg", image)
+        # cv2.imwrite("resized.jpg", image)
 
         image_bbox = self.model_test.get_bbox(image)
         prediction = np.zeros((1, 3))
@@ -52,13 +52,10 @@ class AntiSpoofService:
         label = np.argmax(prediction)
         confidence = prediction[0][label] / 2
         
-        # Generate result visualization
         result_img = self._generate_result_image(image, image_bbox, label, confidence)
-        _, img_encoded = cv2.imencode('.jpg', result_img)
-        img_base64 = base64.b64encode(img_encoded).decode('utf-8')
 
         is_real = bool(label == 1 and confidence > threshold)
-        return is_real, processing_time, img_base64
+        return is_real, confidence, result_img, "{:.2f}".format(processing_time)
 
     def _generate_result_image(self, image, bbox, label, confidence):
         color = (255, 0, 0) if label == 1 else (0, 0, 255)
