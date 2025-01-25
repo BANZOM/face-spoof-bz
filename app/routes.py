@@ -35,7 +35,7 @@ def predict():
         is_real, score, result_img, time_taken = service.predict(image, threshold)
 
         if not is_real:
-            filename = os.path.join(os.getenv("SPOOF_DIR"), f"{int(time.time())}.jpeg")
+            filename = os.path.join(os.getenv("SPOOF_DIR", "spoofs"), f"{int(time.time())}.jpeg")
             cv2.imwrite(filename, result_img)
             
         return jsonify({
