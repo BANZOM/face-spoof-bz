@@ -1,4 +1,5 @@
 import time
+import logging
 from flask import Blueprint, current_app, request, jsonify
 import cv2
 import numpy as np
@@ -8,6 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 main_bp = Blueprint('main', __name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -15,6 +21,7 @@ def allowed_file(filename):
 
 @main_bp.route('/api/v1/predict', methods=['POST'])
 def predict():
+
     current_app.logger.info(f"Received request at /api/v1/predict from {request.remote_addr}")
     
     if 'image' not in request.files:

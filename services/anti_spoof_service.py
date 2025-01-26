@@ -1,5 +1,6 @@
 import os
 import time
+import logging
 import cv2
 import numpy as np
 import logging
@@ -66,6 +67,7 @@ class AntiSpoofService:
             is_real = bool(label == 1 and confidence > threshold)
             
             return is_real, confidence, result_img, "{:.2f}".format(processing_time)
+
 
         except Exception as e:
             self.logger.error(f"Prediction failed: {str(e)}", exc_info=True)
